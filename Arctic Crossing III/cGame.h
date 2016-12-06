@@ -73,8 +73,7 @@ private:
 	vector <cButton> theButtons;
 	// Game objects
 	// Define the elements and there position in/on the array/map
-	cTileMap theTileMap;
-	cTilePicker theTilePicker;
+
 	cFileHandler theFile;
 	cSprite dragTile;
 	SDL_Point theTileClicked;

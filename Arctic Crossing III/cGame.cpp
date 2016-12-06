@@ -48,21 +48,6 @@ void cGame::initialise(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
 	theTextureMgr->setRenderer(theRenderer);
 	theFontMgr->initFontLib();
 	theSoundMgr->initMixer();
-
-	// Set filename
-	theFile.setFileName("Data/usermap.dat");
-	// Check file is available
-	if (!theFile.openFile(ios::in)) //open file for input output
-	{
-		cout << "Could not open specified file '" << theFile.getFileName() << "'. Error " << SDL_GetError() << endl;
-		fileAvailable = false;
-	}
-	else
-	{
-		cout << "File '" << theFile.getFileName() << "' opened for input!" << endl;
-		fileAvailable = true;
-	}
-
 	theAreaClicked = { 0, 0 };
 	// Store the textures
 	textureName = { "theBackground", "theSeal", "Fish", "iceBlock", "instruct", "title" };
@@ -98,7 +83,7 @@ void cGame::initialise(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
 	}
 	// Create text Textures
 	gameTextNames = { "TitleTxt", "ThanksTxt", "ScoreTxt"};
-	gameTextList = { "Arctic Crossing", "Thanks for playing!", "Score: "};
+	gameTextList = { "Arctic Crossing", "Thanks for playing!", "Score: 0" };
 	for (int text = 0; text < gameTextNames.size(); text++)
 	{
 		theTextureMgr->addTexture(gameTextNames[text], theFontMgr->getFont("ice")->createTextTexture(theRenderer, gameTextList[text], SOLID , { 255, 255, 255, 255 }, { 0, 0, 0, 0 }));
@@ -185,12 +170,22 @@ void cGame::render(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
 	case PLAYING:
 	{
 		spriteBkgd.render(theRenderer, NULL, NULL, spriteBkgd.getSpriteScale());
-		tempTextTexture = theTextureMgr->getTexture("TitleTxt");
+		
 		theButtonMgr->getBtn("exit_btn")->setSpritePos({ 850, 10 });
 		theButtonMgr->getBtn("exit_btn")->render(theRenderer, &theButtonMgr->getBtn("exit_btn")->getSpriteDimensions(), &theButtonMgr->getBtn("exit_btn")->getSpritePos(), theButtonMgr->getBtn("exit_btn")->getSpriteScale());
+		tempTextTexture = theTextureMgr->getTexture("TitleTxt");
 		pos = { 10, 10, tempTextTexture->getTextureRect().w, tempTextTexture->getTextureRect().h };
 		tempTextTexture->renderTexture(theRenderer, tempTextTexture->getTexture(), &tempTextTexture->getTextureRect(), &pos, scale);
+		//render the score
+	
 		
+		tempTextTexture = theTextureMgr->getTexture("ScoreTxt");
+		pos = { 10, 50, tempTextTexture->getTextureRect().w, tempTextTexture->getTextureRect().h };
+		tempTextTexture->renderTexture(theRenderer, tempTextTexture->getTexture(), &tempTextTexture->getTextureRect(), &pos, scale);
+	
+
+
+		//render the scor
 		//render ice blocks
 		IceA.render(theRenderer, &IceA.getSpriteDimensions(), &IceA.getSpritePos(), IceA.getSpriteRotAngle(), &IceA.getSpriteCentre(), IceA.getSpriteScale());
 		IceB.render(theRenderer, &IceB.getSpriteDimensions(), &IceB.getSpritePos(), IceB.getSpriteRotAngle(), &IceB.getSpriteCentre(), IceB.getSpriteScale());
@@ -234,7 +229,6 @@ void cGame::render(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
 
 void cGame::render(SDL_Window* theSDLWND, SDL_Renderer* theRenderer, double rotAngle, SDL_Point* spriteCentre)
 {
-
 	SDL_RenderPresent(theRenderer);
 }
 
@@ -258,30 +252,6 @@ void cGame::update(double deltaTime)
 		{
 			theGameState = theButtonMgr->getBtn("exit_btn")->update(theGameState, END, theAreaClicked);
 			theGameState = theButtonMgr->getBtn("load_btn")->update(theGameState, LOADMAP, theAreaClicked);
-			if (fileAvailable && theGameState == LOADMAP)
-			{
-				theTileMap.initialiseMapFromFile(&theFile);
-				theGameState = PLAYING;
-				theAreaClicked = { 0, 0 };
-			}
-			theGameState = theButtonMgr->getBtn("save_btn")->update(theGameState, SAVEMAP, theAreaClicked);
-			if (theGameState == SAVEMAP)
-			{
-				// Check file is available
-				if (!theFile.openFile(ios::out)) //open file for output
-				{
-					cout << "Could not open specified file '" << theFile.getFileName() << "'. Error " << SDL_GetError() << endl;
-				}
-				else
-				{
-					cout << "File '" << theFile.getFileName() << "' opened for output!" << endl;
-					theTileMap.writeMapDataToFile(&theFile);
-				}
-
-				//theTileMap.writeMapDataToFile(&theFile);
-				theGameState = PLAYING;
-				theAreaClicked = { 0, 0 };
-			}
 
 			//Update ice position
 
@@ -393,6 +363,31 @@ void cGame::update(double deltaTime)
 					theGameState = END;
 				}	
 			}
+			//update the score
+			switch (Score)
+			{
+			case 100:
+			{
+						gameTextList[2] = { "Score: 100" }; break;
+			}
+			case 200:
+			{
+						gameTextList[2] = { "Score: 200" }; break;
+			}
+			case 300:
+			{
+						gameTextList[2] = { "Score: 300" }; break;
+			}
+			case 400:
+			{
+						gameTextList[2] = { "Score: 400" }; break;
+			}
+			}
+
+			if (Score == 400)
+			{
+				//theGameState = END;
+			}
 		}
 		break;
 		case END:
@@ -449,9 +444,6 @@ bool cGame::getInput(bool theLoop)
 				{
 					if (theGameState == PLAYING)
 					{
-						/*theAreaClicked = { event.motion.x, event.motion.y };
-						theTileMap.update(theAreaClicked, theTilePicker.getTilePicked());
-						theTilePicker.setTilePicked(-1);*/
 					}
 				}
 				break;
@@ -463,7 +455,6 @@ bool cGame::getInput(bool theLoop)
 				break;
 			case SDL_MOUSEMOTION:
 			{
-				//dragTile.setSpritePos({ event.motion.x, event.motion.y });
 			}
 			break;
 			case SDL_KEYDOWN:
@@ -474,12 +465,12 @@ bool cGame::getInput(bool theLoop)
 					break;
 				case SDLK_DOWN:
 				{
-					cout << "down ";
+
 				}
 				break;
 				case SDLK_UP:
 				{
-					cout << "up ";
+
 				}
 				break;
 				case SDLK_RIGHT:

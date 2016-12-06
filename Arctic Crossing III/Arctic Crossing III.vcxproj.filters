@@ -63,12 +63,6 @@
     <ClCompile Include="cFish.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="cTileMap.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="cTilePicker.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cButton.h">
@@ -120,12 +114,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="cFish.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="cTileMap.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="cTilePicker.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
