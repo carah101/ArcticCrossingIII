@@ -65,19 +65,16 @@ void cGame::initialise(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
 
 	theAreaClicked = { 0, 0 };
 	// Store the textures
-	textureName = { "tile1", "tile2", "tile3", "tile4", "tile5","tile6", "theBackground", "theSeal", "Fish", "iceBlock" };
-	texturesToUse = {"Images/Tiles/1.png", "Images/Tiles/2.png", "Images/Tiles/3.png", "Images/Tiles/4.png", "Images/Tiles/5.png", "Images/Tiles/6.png", "Images/Background.png", "Images/Seal.png", "Images/Fish.png", "Images/Ice.png" };
+	textureName = { "theBackground", "theSeal", "Fish", "iceBlock", "instruct", "title" };
+	texturesToUse = { "Images/Background.png", "Images/Seal.png", "Images/Fish.png", "Images/Ice.png", "Images/Instructions.png", "Images/Title.png" };
 	for (int tCount = 0; tCount < textureName.size(); tCount++)
 	{	
 		theTextureMgr->addTexture(textureName[tCount], texturesToUse[tCount]);
 	}
-	tempTextTexture = theTextureMgr->getTexture("tile1");
-	aRect = { 0, 0, tempTextTexture->getTextureRect().w, tempTextTexture->getTextureRect().h };
-	aColour = { 228, 213, 238, 255 };
-	// Store the textures
-	btnNameList = { "exit_btn", "instructions_btn", "load_btn", "menu_btn", "play_btn", "save_btn", "settings_btn" };
-	btnTexturesToUse = { "Images/Buttons/button_exit.png", "Images/Buttons/button_instructions.png", "Images/Buttons/button_load.png", "Images/Buttons/button_menu.png", "Images/Buttons/button_play.png", "Images/Buttons/button_save.png", "Images/Buttons/button_settings.png" };
-	btnPos = { { 400, 375 }, { 400, 300 }, { 400, 300 }, { 500, 500 }, { 400, 300 }, { 740, 500 }, { 400, 300 } };
+	// Store the button textures
+	btnNameList = { "exit_btn", "instructions_btn", "load_btn", "menu_btn", "play_btn", "save_btn", };
+	btnTexturesToUse = { "Images/Buttons/button_exit.png", "Images/Buttons/button_instructions.png", "Images/Buttons/button_load.png", "Images/Buttons/button_menu.png", "Images/Buttons/button_play.png", "Images/Buttons/button_save.png", };
+	btnPos = { { 400, 250 }, { 400, 200 }, { 400, 200 }, { 400, 500 }, { 400, 300 }, { 740, 500 } };
 	for (int bCount = 0; bCount < btnNameList.size(); bCount++)
 	{
 		theTextureMgr->addTexture(btnNameList[bCount], btnTexturesToUse[bCount]);
@@ -94,22 +91,22 @@ void cGame::initialise(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
 	theBtnType = EXIT;
 	// Create textures for Game Dialogue (text)
 	fontList = { "ice" };
-	fontsToUse = {"Fonts/ice_demon.ttf" };
+	fontsToUse = {"Fonts/ice_pixel-7.ttf" };
 	for (int fonts = 0; fonts < fontList.size(); fonts++)
 	{
-		theFontMgr->addFont(fontList[fonts], fontsToUse[fonts], 20);
+		theFontMgr->addFont(fontList[fonts], fontsToUse[fonts], 48);
 	}
 	// Create text Textures
-	gameTextNames = { "TitleTxt", "FishTxt", "DragDropTxt", "ThanksTxt", "SeeYouTxt"};
-	gameTextList = { "Arctic Crossing", "Get the fish!", "Don't fall in the water!", "Thanks for playing!", "Save your score?"};
+	gameTextNames = { "TitleTxt", "ThanksTxt", "ScoreTxt"};
+	gameTextList = { "Arctic Crossing", "Thanks for playing!", "Score: "};
 	for (int text = 0; text < gameTextNames.size(); text++)
 	{
-		theTextureMgr->addTexture(gameTextNames[text], theFontMgr->getFont("ice")->createTextTexture(theRenderer, gameTextList[text], SOLID, { 255, 255, 255, 255 }, { 0, 0, 0, 0 }));
+		theTextureMgr->addTexture(gameTextNames[text], theFontMgr->getFont("ice")->createTextTexture(theRenderer, gameTextList[text], SOLID , { 255, 255, 255, 255 }, { 0, 0, 0, 0 }));
 	}
 	// Load game sounds
-	soundList = { "theme", "click" };
-	soundTypes = { MUSIC, SFX };
-	soundsToUse = { "Audio/Bit Quest.mp3", "Audio/SFX/ClickOn.wav"};
+	soundList = { "theme", "click", "pickup", "end" };
+	soundTypes = { MUSIC, SFX, SFX, SFX };
+	soundsToUse = { "Audio/Bit Quest.mp3", "Audio/Button.wav", "Audio/Pickup.wav", "Audio/GameOver.wav" };
 	for (int sounds = 0; sounds < soundList.size(); sounds++)
 	{
 		theSoundMgr->add(soundList[sounds], soundsToUse[sounds], soundTypes[sounds]);
@@ -117,6 +114,7 @@ void cGame::initialise(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
 
 	theSoundMgr->getSnd("theme")->play(-1);
 
+	//initialise background
 	spriteBkgd.setSpritePos({ 0, 0 });
 	spriteBkgd.setTexture(theTextureMgr->getTexture("theBackground"));
 	spriteBkgd.setSpriteDimensions(theTextureMgr->getTexture("theBackground")->getTWidth(), theTextureMgr->getTexture("theBackground")->getTHeight());
@@ -133,7 +131,7 @@ void cGame::initialise(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
 	iceBounce = false;
 
 	//initialise the seal
-	theSeal.setSpritePos({ 60, 450 });
+	theSeal.setSpritePos({ 80, 500 });
 	theSeal.setTexture(theTextureMgr->getTexture("theSeal"));
 	theSeal.setSpriteDimensions(theTextureMgr->getTexture("theSeal")->getTWidth(), theTextureMgr->getTexture("theSeal")->getTHeight());
 	//initialise fish
@@ -142,9 +140,14 @@ void cGame::initialise(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
 	Fish3.setSpritePos({ 100, 675 });	Fish3.setTexture(theTextureMgr->getTexture("Fish"));	Fish3.setSpriteDimensions(theTextureMgr->getTexture("Fish")->getTWidth(), theTextureMgr->getTexture("Fish")->getTHeight());
 	Fish4.setSpritePos({ 850, 675 });	Fish4.setTexture(theTextureMgr->getTexture("Fish"));	Fish4.setSpriteDimensions(theTextureMgr->getTexture("Fish")->getTWidth(), theTextureMgr->getTexture("Fish")->getTHeight());
 
-	
-	/*theTileMap.setMapStartXY({ 100, 100 });
-	theTilePicker.setTileListStartXY({ 740, 100 });*/
+	//initialise title and instruction panels
+	instructions.setSpritePos({ 200, 500 });
+	instructions.setTexture(theTextureMgr->getTexture("instruct"));
+	instructions.setSpriteDimensions(theTextureMgr->getTexture("instruct")->getTWidth(), theTextureMgr->getTexture("instruct")->getTHeight());
+
+	title.setSpritePos({ 200, 50 });
+	title.setTexture(theTextureMgr->getTexture("title"));
+	title.setSpriteDimensions(theTextureMgr->getTexture("title")->getTWidth(), theTextureMgr->getTexture("title")->getTHeight());
 }
 
 void cGame::run(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
@@ -169,23 +172,15 @@ void cGame::render(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
 	{
 	case MENU:
 	{
+		//render  background, instructions and title card
 		spriteBkgd.render(theRenderer, NULL, NULL, spriteBkgd.getSpriteScale());
-		// Render the Title
-		tempTextTexture = theTextureMgr->getTexture("TitleTxt");
-		pos = { 10, 10, tempTextTexture->getTextureRect().w, tempTextTexture->getTextureRect().h };
-		scale = { 1, 1 };
-		tempTextTexture->renderTexture(theRenderer, tempTextTexture->getTexture(), &tempTextTexture->getTextureRect(), &pos, scale);
-		tempTextTexture = theTextureMgr->getTexture("FishTxt");
-		pos = { 300, 10, tempTextTexture->getTextureRect().w, tempTextTexture->getTextureRect().h };
-		tempTextTexture->renderTexture(theRenderer, tempTextTexture->getTexture(), &tempTextTexture->getTextureRect(), &pos, scale);
-		tempTextTexture = theTextureMgr->getTexture("DragDropTxt");
-		pos = { 300, 75, tempTextTexture->getTextureRect().w, tempTextTexture->getTextureRect().h };
-		tempTextTexture->renderTexture(theRenderer, tempTextTexture->getTexture(), &tempTextTexture->getTextureRect(), &pos, scale);
+		instructions.render(theRenderer, &instructions.getSpriteDimensions(), &instructions.getSpritePos(), instructions.getSpriteRotAngle(), &instructions.getSpriteCentre(), instructions.getSpriteScale());
+		title.render(theRenderer, &title.getSpriteDimensions(), &title.getSpritePos(), title.getSpriteRotAngle(), &title.getSpriteCentre(), title.getSpriteScale());
 		// Render Button
 		theButtonMgr->getBtn("play_btn")->render(theRenderer, &theButtonMgr->getBtn("play_btn")->getSpriteDimensions(), &theButtonMgr->getBtn("play_btn")->getSpritePos(), theButtonMgr->getBtn("play_btn")->getSpriteScale());
 		theButtonMgr->getBtn("exit_btn")->setSpritePos({ 400, 375 });
 		theButtonMgr->getBtn("exit_btn")->render(theRenderer, &theButtonMgr->getBtn("exit_btn")->getSpriteDimensions(), &theButtonMgr->getBtn("exit_btn")->getSpritePos(), theButtonMgr->getBtn("exit_btn")->getSpriteScale());
-	}
+			}
 	break;
 	case PLAYING:
 	{
@@ -202,24 +197,11 @@ void cGame::render(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
 		IceC.render(theRenderer, &IceC.getSpriteDimensions(), &IceC.getSpritePos(), IceC.getSpriteRotAngle(), &IceC.getSpriteCentre(), IceC.getSpriteScale());
 
 		// render the seal & fish
-		theSeal.render(theRenderer, &theSeal.getSpriteDimensions(), &theSeal.getSpritePos(), theSeal.getSpriteRotAngle(), &theSeal.getSpriteCentre(), theSeal.getSpriteScale());
 		Fish1.render(theRenderer, &Fish1.getSpriteDimensions(), &Fish1.getSpritePos(), Fish1.getSpriteRotAngle(), &Fish1.getSpriteCentre(), Fish1.getSpriteScale());
 		Fish2.render(theRenderer, &Fish2.getSpriteDimensions(), &Fish2.getSpritePos(), Fish2.getSpriteRotAngle(), &Fish2.getSpriteCentre(), Fish2.getSpriteScale());
 		Fish3.render(theRenderer, &Fish3.getSpriteDimensions(), &Fish3.getSpritePos(), Fish3.getSpriteRotAngle(), &Fish3.getSpriteCentre(), Fish3.getSpriteScale());
 		Fish4.render(theRenderer, &Fish4.getSpriteDimensions(), &Fish4.getSpritePos(), Fish4.getSpriteRotAngle(), &Fish4.getSpriteCentre(), Fish4.getSpriteScale());
-
-		/*
-		theTileMap.render(theSDLWND, theRenderer, theTextureMgr, textureName);
-		theTilePicker.render(theSDLWND, theRenderer, theTextureMgr, textureName);
-		theTileMap.renderGridLines(theRenderer, aRect, aColour);*/
-		/*theButtonMgr->getBtn("load_btn")->setSpritePos({ 675, 10 });
-		theButtonMgr->getBtn("load_btn")->render(theRenderer, &theButtonMgr->getBtn("load_btn")->getSpriteDimensions(), &theButtonMgr->getBtn("load_btn")->getSpritePos(), theButtonMgr->getBtn("load_btn")->getSpriteScale());
-		theButtonMgr->getBtn("save_btn")->setSpritePos({ 850, 10 });
-		theButtonMgr->getBtn("save_btn")->render(theRenderer, &theButtonMgr->getBtn("save_btn")->getSpriteDimensions(), &theButtonMgr->getBtn("save_btn")->getSpritePos(), theButtonMgr->getBtn("save_btn")->getSpriteScale());
-		if (theTilePicker.getTilePicked() > -1)
-		{
-			dragTile.render(theRenderer, &dragTile.getSpriteDimensions(), &dragTile.getSpritePos(), spriteBkgd.getSpriteScale());
-		}*/
+		theSeal.render(theRenderer, &theSeal.getSpriteDimensions(), &theSeal.getSpritePos(), theSeal.getSpriteRotAngle(), &theSeal.getSpriteCentre(), theSeal.getSpriteScale());
 		
 	}
 	break;
@@ -232,12 +214,10 @@ void cGame::render(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
 		tempTextTexture = theTextureMgr->getTexture("ThanksTxt");
 		pos = { 300, 10, tempTextTexture->getTextureRect().w, tempTextTexture->getTextureRect().h };
 		tempTextTexture->renderTexture(theRenderer, tempTextTexture->getTexture(), &tempTextTexture->getTextureRect(), &pos, scale);
-		tempTextTexture = theTextureMgr->getTexture("SeeYouTxt");
-		pos = { 300, 75, tempTextTexture->getTextureRect().w, tempTextTexture->getTextureRect().h };
-		tempTextTexture->renderTexture(theRenderer, tempTextTexture->getTexture(), &tempTextTexture->getTextureRect(), &pos, scale);
-		theButtonMgr->getBtn("menu_btn")->setSpritePos({ 500, 500 });
+
+		theButtonMgr->getBtn("menu_btn")->setSpritePos({ 400, 500 });
 		theButtonMgr->getBtn("menu_btn")->render(theRenderer, &theButtonMgr->getBtn("menu_btn")->getSpriteDimensions(), &theButtonMgr->getBtn("menu_btn")->getSpritePos(), theButtonMgr->getBtn("menu_btn")->getSpriteScale());
-		theButtonMgr->getBtn("exit_btn")->setSpritePos({ 500, 575 });
+		theButtonMgr->getBtn("exit_btn")->setSpritePos({ 400, 575 });
 		theButtonMgr->getBtn("exit_btn")->render(theRenderer, &theButtonMgr->getBtn("exit_btn")->getSpriteDimensions(), &theButtonMgr->getBtn("exit_btn")->getSpritePos(), theButtonMgr->getBtn("exit_btn")->getSpriteScale());
 	}
 	break;
@@ -336,28 +316,43 @@ void cGame::update(double deltaTime)
 				}
 			theSeal.update(deltaTime);
 
-			//check for collisions
+
+			//check for collisions with pickups
 			if (theSeal.collidedWith(&(theSeal.getBoundingRect()), &(Fish1.getBoundingRect())))
 			{
 				Fish1.setActive(false);
 				Score += 100;
+				cout << Score << "\n";
+				theSoundMgr->getSnd("pickup")->play(-1);
 			}
 			if (theSeal.collidedWith(&(theSeal.getBoundingRect()), &(Fish2.getBoundingRect())))
 			{
 				Fish2.setActive(false);
 				Score += 100;
+				cout << Score << "\n";
+				theSoundMgr->getSnd("pickup")->play(-1);
 			}
 			if (theSeal.collidedWith(&(theSeal.getBoundingRect()), &(Fish3.getBoundingRect())))
 			{
 				Fish3.setActive(false);
 				Score += 100;
+				cout << Score << "\n";
+				theSoundMgr->getSnd("pickup")->play(-1);
 			}
 			if (theSeal.collidedWith(&(theSeal.getBoundingRect()), &(Fish4.getBoundingRect())))
 			{
 				Fish4.setActive(false);
 				Score += 100;
+				cout << Score << "\n";
+				theSoundMgr->getSnd("pickup")->play(-1);
 			}
+			//undate the fish
+			Fish1.update(deltaTime);
+			Fish2.update(deltaTime);
+			Fish3.update(deltaTime);
+			Fish4.update(deltaTime);
 
+			//check if the seal is on the ice blocks
 			if (theSeal.collidedWith(&(theSeal.getBoundingRect()), &(IceA.getBoundingRect())) || theSeal.collidedWith(&(theSeal.getBoundingRect()), &(IceC.getBoundingRect())))
 			{
 					if (iceBounce)
@@ -368,9 +363,10 @@ void cGame::update(double deltaTime)
 					{
 						theSeal.setSealMotion({ 0, 130 });
 					}
+					onIce = true;
 			}
 
-			if (theSeal.collidedWith(&(theSeal.getBoundingRect()), &(IceB.getBoundingRect())))
+			else if (theSeal.collidedWith(&(theSeal.getBoundingRect()), &(IceB.getBoundingRect())))
 			{
 					if (!iceBounce)
 					{
@@ -380,13 +376,29 @@ void cGame::update(double deltaTime)
 					{
 						theSeal.setSealMotion({ 0, 130 });
 					}
+					onIce = true;
+			}
+			else
+			{
+				onIce = false;
 			}
 
+			//check if the seal is in the water
 
+
+			if ((theSeal.getSpritePos().x > 330) && (theSeal.getSpritePos().x < 800))
+			{
+				if (!onIce)
+				{
+					theGameState = END;
+				}	
+			}
 		}
 		break;
 		case END:
 		{
+			theSeal.setActive(false);
+			theSoundMgr->getSnd("end")->play(0);
 			theGameState = theButtonMgr->getBtn("exit_btn")->update(theGameState, QUIT, theAreaClicked);
 			theGameState = theButtonMgr->getBtn("menu_btn")->update(theGameState, MENU, theAreaClicked);
 		}
@@ -421,13 +433,6 @@ bool cGame::getInput(bool theLoop)
 					theAreaClicked = { event.motion.x, event.motion.y };
 					if (theGameState == PLAYING)
 					{
-						theTilePicker.update(theAreaClicked);
-						if (theTilePicker.getTilePicked() > -1)
-						{
-							dragTile.setSpritePos(theAreaClicked);
-							dragTile.setTexture(theTextureMgr->getTexture(textureName[theTilePicker.getTilePicked() - 1]));
-							dragTile.setSpriteDimensions(theTextureMgr->getTexture(textureName[theTilePicker.getTilePicked() - 1])->getTWidth(), theTextureMgr->getTexture(textureName[theTilePicker.getTilePicked() - 1])->getTHeight());
-						}
 					}
 				}
 				break;
@@ -444,9 +449,9 @@ bool cGame::getInput(bool theLoop)
 				{
 					if (theGameState == PLAYING)
 					{
-						theAreaClicked = { event.motion.x, event.motion.y };
+						/*theAreaClicked = { event.motion.x, event.motion.y };
 						theTileMap.update(theAreaClicked, theTilePicker.getTilePicked());
-						theTilePicker.setTilePicked(-1);
+						theTilePicker.setTilePicked(-1);*/
 					}
 				}
 				break;

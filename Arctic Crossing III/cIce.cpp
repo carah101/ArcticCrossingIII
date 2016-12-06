@@ -35,7 +35,7 @@ void cIce::update(double deltaTime)
 	currentSpritePos.y += this->getSpriteTranslation().y * deltaTime *2 ;
 
 	this->setSpritePos({ currentSpritePos.x, currentSpritePos.y });
-	cout << "Ice position - x: " << this->getSpritePos().x << " y: " << this->getSpritePos().y << " deltaTime: " << deltaTime << endl;
+	//cout << "Ice position - x: " << this->getSpritePos().x << " y: " << this->getSpritePos().y << " deltaTime: " << deltaTime << endl;
 	this->setBoundingRect(this->getSpritePos());
 }
 /*

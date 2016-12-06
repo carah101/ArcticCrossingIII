@@ -43,7 +43,9 @@ private:
 
 	// Sprites for displaying background and rocket textures
 	cSprite spriteBkgd;
-	cSprite Fish1; cSprite Fish2; cSprite Fish3; cSprite Fish4;
+	cSprite instructions;
+	cSprite title;
+	cFish Fish1; cFish Fish2; cFish Fish3; cFish Fish4;
 	cSeal theSeal;
 	cIce IceA;	cIce IceB;	cIce IceC;
 	// game related variables
@@ -51,6 +53,8 @@ private:
 	vector<LPCSTR> textName;
 	vector<LPCSTR> texturesToUse;
 	bool iceBounce;
+	bool onIce;
+	bool soundPlayed = false;
 	int Score = 0;
 	// Fonts to use
 	vector<LPCSTR> fontList;

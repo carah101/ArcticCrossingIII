@@ -51,12 +51,6 @@
     <ClCompile Include="cTextureMgr.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="cTileMap.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="cTilePicker.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="cSeal.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -64,6 +58,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="cIce.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="cFish.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="cTileMap.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="cTilePicker.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -104,12 +107,6 @@
     <ClInclude Include="cTextureMgr.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="cTileMap.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="cTilePicker.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="GameConstants.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -120,6 +117,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="cIce.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="cFish.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="cTileMap.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="cTilePicker.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

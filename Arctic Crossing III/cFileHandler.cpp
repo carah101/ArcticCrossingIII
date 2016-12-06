@@ -43,7 +43,7 @@ string cFileHandler::readDataFromFile()
 	string output;
 	while (getline(theFile, lineFromFile))
 	{
-		output += lineFromFile;  // + ","
+		output += lineFromFile;  
 	}
 	return output;
 }

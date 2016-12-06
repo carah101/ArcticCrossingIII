@@ -32,7 +32,7 @@ using namespace std::chrono;
 using namespace std;
 
 //Define the string to appear in the top left corner of the window
-#define WINDOW_TITLE "Maze Maker - Level Editor? - Load/Save Map to File"
+#define WINDOW_TITLE "Arctic Crossing"
 #define WINDOW_WIDTH 1024
 #define WINDOW_HEIGHT 768
 
